@@ -24,8 +24,15 @@ class LogoutControllerTest extends TestCase
         $response = $this->postJson('/api/auth/logout');
 
         $response->assertStatus(200)
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'data'
+                 ])
                  ->assertJson([
-                     'message' => 'Successfully logged out'
+                     'success' => true,
+                     'message' => 'Sesión cerrada exitosamente',
+                     'data' => []
                  ]);
 
         $this->assertCount(0, $user->tokens);
@@ -35,6 +42,9 @@ class LogoutControllerTest extends TestCase
     {
         $response = $this->postJson('/api/auth/logout');
 
-        $response->assertStatus(401);
+        $response->assertStatus(401)
+                 ->assertJsonStructure([
+                     'message'
+                 ]);
     }
 } 

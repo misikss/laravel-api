@@ -25,14 +25,22 @@ class LoginControllerTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'user' => [
-                         'id',
-                         'name',
-                         'email',
-                         'created_at',
-                         'updated_at'
-                     ],
-                     'token'
+                     'success',
+                     'message',
+                     'data' => [
+                         'user' => [
+                             'id',
+                             'name',
+                             'email',
+                             'created_at',
+                             'updated_at'
+                         ],
+                         'token'
+                     ]
+                 ])
+                 ->assertJson([
+                     'success' => true,
+                     'message' => 'Inicio de sesión exitoso'
                  ]);
     }
 
@@ -50,8 +58,37 @@ class LoginControllerTest extends TestCase
         ]);
 
         $response->assertStatus(401)
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'errors'
+                 ])
                  ->assertJson([
-                     'message' => 'Invalid credentials'
+                     'success' => false,
+                     'message' => 'Credenciales inválidas',
+                     'errors' => []
+                 ]);
+    }
+
+    public function test_login_validation_error(): void
+    {
+        $response = $this->postJson('/api/auth/login', [
+            'email' => 'not-an-email',
+            'password' => ''
+        ]);
+
+        $response->assertStatus(422)
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'errors' => [
+                         'email',
+                         'password'
+                     ]
+                 ])
+                 ->assertJson([
+                     'success' => false,
+                     'message' => 'Error de validación'
                  ]);
     }
 } 

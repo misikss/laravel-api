@@ -9,10 +9,11 @@ class LogoutController extends Controller
 {
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return $this->sendSuccess('Sesión cerrada exitosamente');
+        } catch (\Exception $e) {
+            return $this->sendError('Error al cerrar sesión', [], 500);
+        }
     }
 } 
