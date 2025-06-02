@@ -9,9 +9,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ExampleTest::class)]
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
     #[Test]
     public function true_is_true(): void
     {
@@ -23,4 +20,4 @@ class ExampleTest extends TestCase
     {
         $this->assertFalse(false);
     }
-}
+} 
