@@ -9,7 +9,7 @@ trait ApiFeedbackSender
      *
      * @param string $message Mensaje de éxito
      * @param mixed $data Datos adicionales (opcional)
-     * @param int $code Código de estado HTTP (opcional)
+     * @param int $code Código de estado HTTP
      * @return \Illuminate\Http\JsonResponse
      */
     protected function sendSuccess(string $message, $data = [], int $code = 200)
@@ -26,10 +26,10 @@ trait ApiFeedbackSender
      *
      * @param string $message Mensaje de error
      * @param array $errors Lista de errores
-     * @param int $code Código de estado HTTP (opcional)
+     * @param int $code Código de estado HTTP
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function sendError(string $message, $errors = [], int $code = 422)
+    protected function sendError(string $message, $errors = [], int $code = 400)
     {
         return response()->json([
             'success' => false,

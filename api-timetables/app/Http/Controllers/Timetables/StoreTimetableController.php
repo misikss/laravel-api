@@ -12,6 +12,11 @@ class StoreTimetableController extends Controller
 {
     use ApiFeedbackSender;
 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function __invoke(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -23,7 +28,12 @@ class StoreTimetableController extends Controller
             return $this->sendError('Error de validación', $validator->errors());
         }
 
-        $timetable = Timetable::create($validator->validated());
-        return $this->sendSuccess($timetable, 'Horario creado exitosamente', 201);
+        $timetable = Timetable::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'user_id' => $request->user()->id
+        ]);
+
+        return $this->sendSuccess('Horario creado exitosamente', $timetable, 201);
     }
 } 

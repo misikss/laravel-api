@@ -26,7 +26,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // Rutas de Timetables
-Route::prefix('timetables')->group(function () {
+Route::middleware('auth:sanctum')->prefix('timetables')->group(function () {
     Route::get('/', IndexTimetableController::class);
     Route::post('/', StoreTimetableController::class);
     Route::get('/{timetable}', ShowTimetableController::class);

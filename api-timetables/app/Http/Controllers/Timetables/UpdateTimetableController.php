@@ -12,14 +12,13 @@ class UpdateTimetableController extends Controller
 {
     use ApiFeedbackSender;
 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function __invoke(Request $request, $id)
     {
-        $timetable = Timetable::find($id);
-        
-        if (!$timetable) {
-            return $this->sendError('Horario no encontrado', ['No se encontró el recurso solicitado'], 404);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:300'
@@ -29,7 +28,18 @@ class UpdateTimetableController extends Controller
             return $this->sendError('Error de validación', $validator->errors());
         }
 
-        $timetable->update($validator->validated());
-        return $this->sendSuccess($timetable, 'Horario actualizado exitosamente');
+        $timetable = Timetable::where('user_id', $request->user()->id)
+            ->find($id);
+
+        if (!$timetable) {
+            return $this->sendError('Horario no encontrado', ['No se encontró el recurso solicitado'], 404);
+        }
+
+        $timetable->update([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
+
+        return $this->sendSuccess('Horario actualizado exitosamente', $timetable);
     }
 } 
