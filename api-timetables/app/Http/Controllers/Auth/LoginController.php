@@ -19,7 +19,7 @@ class LoginController extends Controller
             ]);
 
             if (!Auth::attempt($request->only('email', 'password'))) {
-                return $this->sendError('Credenciales inválidas', [], 401);
+                return $this->sendError('Credenciales inválidas', ['email' => ['Las credenciales proporcionadas son incorrectas']], 401);
             }
 
             $user = User::where('email', $request->email)->firstOrFail();
@@ -32,7 +32,7 @@ class LoginController extends Controller
         } catch (ValidationException $e) {
             return $this->sendError('Error de validación', $e->errors(), 422);
         } catch (\Exception $e) {
-            return $this->sendError('Error al iniciar sesión', [], 500);
+            return $this->sendError('Error al iniciar sesión', ['error' => [$e->getMessage()]], 500);
         }
     }
 } 

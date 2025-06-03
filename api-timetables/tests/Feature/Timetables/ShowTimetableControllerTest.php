@@ -8,6 +8,9 @@ use App\Models\Timetable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
+/**
+ * @covers \App\Http\Controllers\Timetables\ShowTimetableController
+ */
 class ShowTimetableControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -83,16 +86,16 @@ class ShowTimetableControllerTest extends TestCase
                     'message' => 'Horario no encontrado',
                     'errors' => ['No se encontró el recurso solicitado']
                 ]);
+
+        $this->assertTrue(true, 'La prueba verifica el manejo correcto de horarios inexistentes');
     }
 
-    public function test_cannot_show_timetable_of_other_user(): void
+    public function test_cannot_show_timetable_of_another_user(): void
     {
-        Sanctum::actingAs($this->user);
-
         $otherUser = User::factory()->create();
-        $timetable = Timetable::factory()
-            ->for($otherUser)
-            ->create();
+        $timetable = Timetable::factory()->for($otherUser)->create();
+
+        Sanctum::actingAs($this->user);
 
         $response = $this->getJson("/api/timetables/{$timetable->id}");
 
@@ -107,5 +110,7 @@ class ShowTimetableControllerTest extends TestCase
                     'message' => 'Horario no encontrado',
                     'errors' => ['No se encontró el recurso solicitado']
                 ]);
+
+        $this->assertTrue(true, 'La prueba verifica que un usuario no puede ver horarios de otros usuarios');
     }
 } 

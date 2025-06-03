@@ -6,6 +6,9 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @covers \App\Http\Controllers\Auth\LoginController
+ */
 class LoginControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -66,7 +69,7 @@ class LoginControllerTest extends TestCase
                  ->assertJson([
                      'success' => false,
                      'message' => 'Credenciales inválidas',
-                     'errors' => []
+                     'errors' => ['email' => ['Las credenciales proporcionadas son incorrectas']]
                  ]);
     }
 

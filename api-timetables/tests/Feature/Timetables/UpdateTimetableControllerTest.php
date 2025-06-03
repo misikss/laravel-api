@@ -8,6 +8,9 @@ use App\Models\Timetable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
+/**
+ * @covers \App\Http\Controllers\Timetables\UpdateTimetableController
+ */
 class UpdateTimetableControllerTest extends TestCase
 {
     use RefreshDatabase;

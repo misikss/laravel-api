@@ -29,7 +29,7 @@ trait ApiFeedbackSender
      * @param int $code Código de estado HTTP (opcional)
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function sendError(string $message, $errors = [], int $code = 422)
+    protected function sendError(string $message, $errors = [], int $code = 400)
     {
         return response()->json([
             'success' => false,

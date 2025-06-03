@@ -6,6 +6,9 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @covers \App\Http\Controllers\Auth\RegisterController
+ */
 class RegisterControllerTest extends TestCase
 {
     use RefreshDatabase;

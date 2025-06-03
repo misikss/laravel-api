@@ -8,6 +8,9 @@ use App\Models\Timetable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
+/**
+ * @covers \App\Http\Controllers\Timetables\DeleteTimetableController
+ */
 class DeleteTimetableControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -64,14 +67,43 @@ class DeleteTimetableControllerTest extends TestCase
         $response = $this->deleteJson('/api/timetables/999');
 
         $response->assertStatus(404)
-                 ->assertJsonStructure([
-                     'success',
-                     'message',
-                     'errors'
-                 ])
-                 ->assertJson([
-                     'success' => false,
-                     'message' => 'Horario no encontrado'
-                 ]);
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'errors'
+                ])
+                ->assertJson([
+                    'success' => false,
+                    'message' => 'Horario no encontrado',
+                    'errors' => ['No se encontró el recurso solicitado']
+                ]);
+
+        $this->assertTrue(true, 'La prueba verifica el manejo correcto de horarios inexistentes');
+    }
+
+    public function test_cannot_delete_timetable_of_another_user(): void
+    {
+        $otherUser = User::factory()->create();
+        $timetable = Timetable::factory()->for($otherUser)->create();
+
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson("/api/timetables/{$timetable->id}");
+
+        $response->assertStatus(404)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'errors'
+                ])
+                ->assertJson([
+                    'success' => false,
+                    'message' => 'Horario no encontrado',
+                    'errors' => ['No se encontró el recurso solicitado']
+                ]);
+
+        $this->assertDatabaseHas('timetables', [
+            'id' => $timetable->id
+        ]);
     }
 } 

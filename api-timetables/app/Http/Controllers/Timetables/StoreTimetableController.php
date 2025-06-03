@@ -25,7 +25,7 @@ class StoreTimetableController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Error de validación', $validator->errors());
+            return $this->sendError('Error de validación', $validator->errors(), 422);
         }
 
         $timetable = Timetable::create([
