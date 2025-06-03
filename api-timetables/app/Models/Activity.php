@@ -17,6 +17,7 @@ class Activity extends Model
      */
     protected $fillable = [
         'user_id',
+        'timetable_id',
         'weekday',
         'start_time',
         'duration',
@@ -41,5 +42,13 @@ class Activity extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the timetable that owns the activity.
+     */
+    public function timetable(): BelongsTo
+    {
+        return $this->belongsTo(Timetable::class);
     }
 } 

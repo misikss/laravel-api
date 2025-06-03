@@ -1,0 +1,5 @@
+{
+    "require": {
+        "knuckleswtf/scribe": "^5.1"
+    }
+}

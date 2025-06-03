@@ -7,12 +7,17 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * @covers \App\Http\Controllers\Auth\LoginController
+ * Pruebas de integración para el proceso de inicio de sesión
+ * Verifica la autenticación y manejo de errores
  */
 class LoginControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Verifica el proceso exitoso de inicio de sesión
+     * Comprueba la estructura de la respuesta y la generación del token
+     */
     public function test_user_can_login(): void
     {
         $user = User::create([
@@ -47,6 +52,10 @@ class LoginControllerTest extends TestCase
                  ]);
     }
 
+    /**
+     * Prueba el manejo de credenciales inválidas
+     * Verifica que se devuelva el mensaje de error apropiado
+     */
     public function test_user_cannot_login_with_invalid_credentials(): void
     {
         $user = User::create([
@@ -73,6 +82,10 @@ class LoginControllerTest extends TestCase
                  ]);
     }
 
+    /**
+     * Verifica las validaciones de formato en los campos de inicio de sesión
+     * Comprueba que se manejen correctamente los errores de validación
+     */
     public function test_login_validation_error(): void
     {
         $response = $this->postJson('/api/auth/login', [

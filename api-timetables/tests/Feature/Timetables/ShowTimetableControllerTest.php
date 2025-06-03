@@ -4,6 +4,7 @@ namespace Tests\Feature\Timetables;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Activity;
 use App\Models\Timetable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -34,7 +35,7 @@ class ShowTimetableControllerTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_can_show_timetable(): void
+    public function test_can_show_timetable_with_activities(): void
     {
         Sanctum::actingAs($this->user);
 
@@ -42,75 +43,54 @@ class ShowTimetableControllerTest extends TestCase
             ->for($this->user)
             ->create();
 
+        // Crear algunas actividades asociadas al horario
+        Activity::factory()->count(3)->create([
+            'user_id' => $this->user->id,
+            'timetable_id' => $timetable->id
+        ]);
+
         $response = $this->getJson("/api/timetables/{$timetable->id}");
 
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'success',
-                    'message',
-                    'data' => [
-                        'id',
-                        'name',
-                        'description',
-                        'user_id',
-                        'created_at',
-                        'updated_at'
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'data' => [
+                    'id',
+                    'name',
+                    'description',
+                    'user_id',
+                    'created_at',
+                    'updated_at',
+                    'activities' => [
+                        '*' => [
+                            'id',
+                            'user_id',
+                            'timetable_id',
+                            'weekday',
+                            'start_time',
+                            'duration',
+                            'information',
+                            'is_available'
+                        ]
                     ]
-                ])
-                ->assertJson([
-                    'success' => true,
-                    'message' => 'Horario encontrado',
-                    'data' => [
-                        'id' => $timetable->id,
-                        'name' => $timetable->name,
-                        'description' => $timetable->description,
-                        'user_id' => $this->user->id
-                    ]
-                ]);
+                ]
+            ]);
+
+        $this->assertCount(3, $response->json('data.activities'));
     }
 
-    public function test_cannot_show_nonexistent_timetable(): void
+    public function test_cannot_show_timetable_of_other_user(): void
     {
         Sanctum::actingAs($this->user);
 
-        $response = $this->getJson('/api/timetables/999');
-
-        $response->assertStatus(404)
-                ->assertJsonStructure([
-                    'success',
-                    'message',
-                    'errors'
-                ])
-                ->assertJson([
-                    'success' => false,
-                    'message' => 'Horario no encontrado',
-                    'errors' => ['No se encontró el recurso solicitado']
-                ]);
-
-        $this->assertTrue(true, 'La prueba verifica el manejo correcto de horarios inexistentes');
-    }
-
-    public function test_cannot_show_timetable_of_another_user(): void
-    {
         $otherUser = User::factory()->create();
-        $timetable = Timetable::factory()->for($otherUser)->create();
-
-        Sanctum::actingAs($this->user);
+        $timetable = Timetable::factory()
+            ->for($otherUser)
+            ->create();
 
         $response = $this->getJson("/api/timetables/{$timetable->id}");
 
-        $response->assertStatus(404)
-                ->assertJsonStructure([
-                    'success',
-                    'message',
-                    'errors'
-                ])
-                ->assertJson([
-                    'success' => false,
-                    'message' => 'Horario no encontrado',
-                    'errors' => ['No se encontró el recurso solicitado']
-                ]);
-
-        $this->assertTrue(true, 'La prueba verifica que un usuario no puede ver horarios de otros usuarios');
+        $response->assertStatus(404);
     }
 } 

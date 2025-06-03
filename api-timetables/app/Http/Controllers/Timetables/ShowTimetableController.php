@@ -19,6 +19,7 @@ class ShowTimetableController extends Controller
     public function __invoke(Request $request, $id)
     {
         $timetable = Timetable::where('user_id', $request->user()->id)
+            ->with('activities')
             ->find($id);
         
         if (!$timetable) {

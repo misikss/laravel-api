@@ -9,7 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
 /**
- * @covers \App\Http\Controllers\Timetables\StoreTimetableController
+ * Pruebas de integración para la creación de horarios
+ * Verifica la validación de datos y la seguridad
  */
 class StoreTimetableControllerTest extends TestCase
 {
@@ -23,6 +24,10 @@ class StoreTimetableControllerTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+    /**
+     * Verifica que usuarios no autenticados no puedan crear horarios
+     * Comprueba el código de respuesta 401
+     */
     public function test_cannot_create_timetable_when_not_authenticated(): void
     {
         $timetableData = [
@@ -35,6 +40,10 @@ class StoreTimetableControllerTest extends TestCase
         $response->assertStatus(401);
     }
 
+    /**
+     * Prueba la creación exitosa de un horario
+     * Verifica la estructura de la respuesta y la persistencia en base de datos
+     */
     public function test_can_create_timetable(): void
     {
         Sanctum::actingAs($this->user);
@@ -76,6 +85,10 @@ class StoreTimetableControllerTest extends TestCase
         ]);
     }
 
+    /**
+     * Verifica el manejo de datos inválidos
+     * Prueba las restricciones de longitud en nombre y descripción
+     */
     public function test_cannot_create_timetable_with_invalid_data(): void
     {
         Sanctum::actingAs($this->user);
@@ -100,6 +113,10 @@ class StoreTimetableControllerTest extends TestCase
                  ]);
     }
 
+    /**
+     * Prueba que no se pueda crear un horario sin los campos requeridos
+     * Verifica que se devuelvan los errores de validación apropiados
+     */
     public function test_cannot_create_timetable_without_required_fields(): void
     {
         Sanctum::actingAs($this->user);

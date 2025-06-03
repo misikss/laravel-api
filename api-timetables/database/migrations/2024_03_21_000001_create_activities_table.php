@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('timetable_id')->constrained()->onDelete('cascade');
             $table->integer('weekday')->comment('1 = Monday, 7 = Sunday');
             $table->string('start_time');
             $table->integer('duration')->comment('Duration in minutes');
