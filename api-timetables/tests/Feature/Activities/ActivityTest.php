@@ -9,8 +9,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * Pruebas de integración para el módulo de Actividades
- * Cubre las operaciones CRUD y validaciones de seguridad
+ * @covers \App\Http\Controllers\Activities\IndexActivityController
+ * @covers \App\Http\Controllers\Activities\StoreActivityController
+ * @covers \App\Http\Controllers\Activities\ShowActivityController
+ * @covers \App\Http\Controllers\Activities\UpdateActivityController
+ * @covers \App\Http\Controllers\Activities\DeleteActivityController
  */
 class ActivityTest extends TestCase
 {
@@ -47,20 +50,35 @@ class ActivityTest extends TestCase
                 'success',
                 'message',
                 'data' => [
-                    '*' => [
-                        'id',
-                        'user_id',
-                        'weekday',
-                        'start_time',
-                        'duration',
-                        'information',
-                        'is_available',
-                        'created_at',
-                        'updated_at'
-                    ]
+                    'data' => [
+                        '*' => [
+                            'id',
+                            'user_id',
+                            'weekday',
+                            'start_time',
+                            'duration',
+                            'information',
+                            'is_available',
+                            'created_at',
+                            'updated_at'
+                        ]
+                    ],
+                    'current_page',
+                    'first_page_url',
+                    'from',
+                    'last_page',
+                    'last_page_url',
+                    'links',
+                    'next_page_url',
+                    'path',
+                    'per_page',
+                    'prev_page_url',
+                    'to',
+                    'total'
                 ]
-            ])
-            ->assertJsonCount(3, 'data');
+            ]);
+
+        $response->assertJsonCount(3, 'data.data');
 
         foreach ($activities as $activity) {
             $response->assertJsonFragment([

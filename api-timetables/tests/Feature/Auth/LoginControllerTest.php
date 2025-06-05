@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
+ * @covers \App\Http\Controllers\Auth\LoginController
+ *
  * Pruebas de integración para el proceso de inicio de sesión
  * Verifica la autenticación y manejo de errores
  */

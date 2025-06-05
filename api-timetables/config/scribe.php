@@ -9,10 +9,10 @@ use function Knuckles\Scribe\Config\{removeStrategies, configureStrategy};
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => config('app.name').' API Documentation',
+    'title' => 'API de Horarios - Documentación',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => '',
+    'description' => 'API para la gestión de horarios y actividades. Permite a los usuarios crear, leer, actualizar y eliminar horarios y sus actividades asociadas.',
 
     // The base URL displayed in the docs.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
@@ -95,17 +95,17 @@ return [
     // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
-        'enabled' => false,
+        'enabled' => true,
 
         // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
         // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
-        'default' => false,
+        'default' => true,
 
         // Where is the auth value meant to be sent in a request?
-        'in' => AuthIn::BEARER->value,
+        'in' => 'bearer',
 
         // The name of the auth parameter (e.g. token, key, apiKey) or header (e.g. Authorization, Api-Key).
-        'name' => 'key',
+        'name' => 'Authorization',
 
         // The value of the parameter to be used by Scribe to authenticate response calls.
         // This will NOT be included in the generated documentation. If empty, Scribe will use a random value.
@@ -116,16 +116,58 @@ return [
         'placeholder' => '{YOUR_AUTH_KEY}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => <<<EOT
+Para obtener un token de autenticación:
+
+1. Realiza una petición POST a `/api/auth/login` con tus credenciales:
+```json
+{
+    "email": "tu@email.com",
+    "password": "tu_contraseña"
+}
+```
+
+2. Del response, toma el valor del campo `data.token`
+3. En cada petición que requiera autenticación, incluye el header:
+   `Authorization: Bearer {tu_token}`
+EOT,
     ],
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<INTRO
-        This documentation aims to provide all the information you need to work with our API.
+Esta documentación proporciona toda la información necesaria para trabajar con nuestra API de Horarios.
 
-        <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
-        You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
-    INTRO,
+### Características Principales
+
+- Autenticación mediante tokens Bearer
+- Gestión completa de horarios (CRUD)
+- Gestión de actividades por horario
+- Paginación en listados
+- Filtros para búsquedas específicas
+
+### Respuestas Estándar
+
+Todas las respuestas siguen este formato:
+
+```json
+{
+    "success": true|false,
+    "message": "Mensaje descriptivo",
+    "data": { ... }
+}
+```
+
+### Códigos de Estado
+
+- 200: Operación exitosa
+- 201: Recurso creado
+- 400: Error en la solicitud
+- 401: No autenticado
+- 403: No autorizado
+- 404: Recurso no encontrado
+- 422: Error de validación
+- 500: Error del servidor
+INTRO,
 
     // Example requests for each endpoint will be shown in each of these languages.
     // Supported options are: bash, javascript, php, python
@@ -134,6 +176,7 @@ return [
     'example_languages' => [
         'bash',
         'javascript',
+        'php'
     ],
 
     // Generate a Postman collection (v2.1.0) in addition to HTML docs.

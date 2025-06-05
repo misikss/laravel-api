@@ -1,7 +1,8 @@
 name: 'Gestión de Actividades'
 description: |-
 
-  APIs para gestionar las actividades de los horarios
+  APIs para gestionar las actividades de los horarios.
+  Cada actividad pertenece a un horario específico y solo puede ser gestionada por su propietario.
 endpoints:
   -
     httpMethods:
@@ -11,14 +12,18 @@ endpoints:
       groupName: 'Gestión de Actividades'
       groupDescription: |-
 
-        APIs para gestionar las actividades de los horarios
+        APIs para gestionar las actividades de los horarios.
+        Cada actividad pertenece a un horario específico y solo puede ser gestionada por su propietario.
       subgroup: ''
       subgroupDescription: ''
       title: 'Listar Actividades'
-      description: 'Obtiene todas las actividades del usuario autenticado.'
+      description: |-
+        Obtiene todas las actividades del usuario autenticado.
+        Los resultados están paginados y pueden ser filtrados por varios criterios.
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -26,7 +31,7 @@ endpoints:
     queryParameters:
       page:
         name: page
-        description: 'Número de página para la paginación.'
+        description: 'Número de página para la paginación. Mínimo: 1.'
         required: false
         example: 1
         type: integer
@@ -36,7 +41,7 @@ endpoints:
         custom: []
       per_page:
         name: per_page
-        description: 'Elementos por página (máximo 50).'
+        description: 'Elementos por página. Mínimo: 1, Máximo: 50.'
         required: false
         example: 10
         type: integer
@@ -56,7 +61,7 @@ endpoints:
         custom: []
       weekday:
         name: weekday
-        description: 'Filtrar por día de la semana (1-7).'
+        description: 'Filtrar por día de la semana (1=Lunes, 7=Domingo).'
         required: false
         example: 1
         type: integer
@@ -66,7 +71,7 @@ endpoints:
         custom: []
       is_available:
         name: is_available
-        description: 'Filtrar por disponibilidad.'
+        description: 'Filtrar por disponibilidad (true=disponible, false=no disponible).'
         required: false
         example: true
         type: boolean
@@ -90,27 +95,63 @@ endpoints:
           {
               "success": true,
               "message": "Lista de actividades",
-              "data": [
-                  {
-                      "id": 1,
-                      "weekday": 2,
-                      "start_time": "09:30",
-                      "duration": 60,
-                      "information": "Clase de matemáticas",
-                      "is_available": true,
-                      "user_id": 1,
-                      "timetable_id": 1,
-                      "created_at": "2024-03-06T12:00:00.000000Z",
-                      "updated_at": "2024-03-06T12:00:00.000000Z"
-                  }
-              ],
-              "meta": {
+              "data": {
+                  "data": [
+                      {
+                          "id": 1,
+                          "weekday": 2,
+                          "start_time": "09:30",
+                          "duration": 60,
+                          "information": "Clase de matemáticas",
+                          "is_available": true,
+                          "user_id": 1,
+                          "timetable_id": 1,
+                          "created_at": "2024-03-06T12:00:00.000000Z",
+                          "updated_at": "2024-03-06T12:00:00.000000Z"
+                      }
+                  ],
                   "current_page": 1,
+                  "first_page_url": "http://localhost:8000/api/activities?page=1",
                   "from": 1,
                   "last_page": 1,
+                  "last_page_url": "http://localhost:8000/api/activities?page=1",
+                  "links": [
+                      {
+                          "url": null,
+                          "label": "&laquo; Anterior",
+                          "active": false
+                      },
+                      {
+                          "url": "http://localhost:8000/api/activities?page=1",
+                          "label": "1",
+                          "active": true
+                      },
+                      {
+                          "url": null,
+                          "label": "Siguiente &raquo;",
+                          "active": false
+                      }
+                  ],
+                  "next_page_url": null,
+                  "path": "http://localhost:8000/api/activities",
                   "per_page": 10,
+                  "prev_page_url": null,
                   "to": 1,
                   "total": 1
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+              "success": false,
+              "message": "Error en los parámetros de consulta",
+              "errors": {
+                  "weekday": ["El día de la semana debe estar entre 1 y 7"],
+                  "per_page": ["El número de elementos por página no puede ser mayor a 50"]
               }
           }
         headers: []
@@ -126,7 +167,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
     controller: null
     method: null
     route: null
@@ -147,6 +191,7 @@ endpoints:
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -273,7 +318,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
     controller: null
     method: null
     route: null

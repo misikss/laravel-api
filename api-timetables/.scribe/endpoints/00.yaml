@@ -16,9 +16,10 @@ endpoints:
       subgroupDescription: ''
       title: 'Registrar Usuario'
       description: 'Crea una nueva cuenta de usuario y devuelve un token de acceso.'
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -108,7 +109,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
     controller: null
     method: null
     route: null
@@ -121,11 +125,14 @@ endpoints:
       groupName: Autenticación
       groupDescription: |-
 
-        APIs para gestionar la autenticación de usuarios
+        APIs para gestionar la autenticación de usuarios.
+        Incluye endpoints para iniciar sesión y obtener tokens de acceso.
       subgroup: ''
       subgroupDescription: ''
       title: 'Iniciar Sesión'
-      description: 'Inicia sesión con las credenciales proporcionadas y devuelve un token de acceso.'
+      description: |-
+        Inicia sesión con las credenciales proporcionadas y devuelve un token de acceso.
+        El token devuelto debe ser incluido en el header Authorization de las siguientes peticiones.
       authenticated: false
       custom: []
     headers:
@@ -138,7 +145,7 @@ endpoints:
     bodyParameters:
       email:
         name: email
-        description: 'El correo electrónico del usuario.'
+        description: 'El correo electrónico del usuario registrado.'
         required: true
         example: usuario@ejemplo.com
         type: string
@@ -148,7 +155,7 @@ endpoints:
         custom: []
       password:
         name: password
-        description: 'La contraseña del usuario.'
+        description: 'La contraseña del usuario (mínimo 8 caracteres).'
         required: true
         example: contraseña123
         type: string
@@ -187,7 +194,7 @@ endpoints:
           {
               "success": false,
               "message": "Credenciales inválidas",
-              "data": {
+              "errors": {
                   "email": ["Las credenciales proporcionadas son incorrectas"]
               }
           }
@@ -200,9 +207,25 @@ endpoints:
           {
               "success": false,
               "message": "Error de validación",
-              "data": {
-                  "email": ["El campo email es obligatorio"],
+              "errors": {
+                  "email": [
+                      "El campo email es obligatorio",
+                      "El email debe ser una dirección de correo válida"
+                  ],
                   "password": ["El campo password es obligatorio"]
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+              "success": false,
+              "message": "Error al iniciar sesión",
+              "errors": {
+                  "error": ["Error interno del servidor"]
               }
           }
         headers: []

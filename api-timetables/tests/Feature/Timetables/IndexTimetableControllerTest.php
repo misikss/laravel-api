@@ -46,14 +46,28 @@ class IndexTimetableControllerTest extends TestCase
                      'success',
                      'message',
                      'data' => [
-                         '*' => [
-                             'id',
-                             'name',
-                             'description',
-                             'user_id',
-                             'created_at',
-                             'updated_at'
-                         ]
+                         'data' => [
+                             '*' => [
+                                 'id',
+                                 'name',
+                                 'description',
+                                 'user_id',
+                                 'created_at',
+                                 'updated_at'
+                             ]
+                         ],
+                         'current_page',
+                         'first_page_url',
+                         'from',
+                         'last_page',
+                         'last_page_url',
+                         'links',
+                         'next_page_url',
+                         'path',
+                         'per_page',
+                         'prev_page_url',
+                         'to',
+                         'total'
                      ]
                  ])
                  ->assertJson([
@@ -81,12 +95,28 @@ class IndexTimetableControllerTest extends TestCase
                  ->assertJsonStructure([
                      'success',
                      'message',
-                     'data'
+                     'data' => [
+                         'data',
+                         'current_page',
+                         'first_page_url',
+                         'from',
+                         'last_page',
+                         'last_page_url',
+                         'links',
+                         'next_page_url',
+                         'path',
+                         'per_page',
+                         'prev_page_url',
+                         'to',
+                         'total'
+                     ]
                  ])
                  ->assertJson([
                      'success' => true,
                      'message' => 'Lista de horarios',
-                     'data' => []
+                     'data' => [
+                         'data' => []
+                     ]
                  ]);
     }
 } 

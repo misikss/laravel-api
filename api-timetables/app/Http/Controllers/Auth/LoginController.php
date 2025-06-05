@@ -11,7 +11,8 @@ use Illuminate\Validation\ValidationException;
 /**
  * @group Autenticación
  *
- * APIs para gestionar la autenticación de usuarios
+ * APIs para gestionar la autenticación de usuarios.
+ * Incluye endpoints para iniciar sesión y obtener tokens de acceso.
  */
 class LoginController extends Controller
 {
@@ -19,9 +20,12 @@ class LoginController extends Controller
      * Iniciar Sesión
      * 
      * Inicia sesión con las credenciales proporcionadas y devuelve un token de acceso.
+     * El token devuelto debe ser incluido en el header Authorization de las siguientes peticiones.
      *
-     * @bodyParam email string required El correo electrónico del usuario. Example: usuario@ejemplo.com
-     * @bodyParam password string required La contraseña del usuario. Example: contraseña123
+     * @unauthenticated
+     * 
+     * @bodyParam email string required El correo electrónico del usuario registrado. Example: usuario@ejemplo.com
+     * @bodyParam password string required La contraseña del usuario (mínimo 8 caracteres). Example: contraseña123
      *
      * @response 200 {
      *     "success": true,
@@ -41,7 +45,7 @@ class LoginController extends Controller
      * @response 401 {
      *     "success": false,
      *     "message": "Credenciales inválidas",
-     *     "data": {
+     *     "errors": {
      *         "email": ["Las credenciales proporcionadas son incorrectas"]
      *     }
      * }
@@ -49,9 +53,20 @@ class LoginController extends Controller
      * @response 422 {
      *     "success": false,
      *     "message": "Error de validación",
-     *     "data": {
-     *         "email": ["El campo email es obligatorio"],
+     *     "errors": {
+     *         "email": [
+     *             "El campo email es obligatorio",
+     *             "El email debe ser una dirección de correo válida"
+     *         ],
      *         "password": ["El campo password es obligatorio"]
+     *     }
+     * }
+     * 
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Error al iniciar sesión",
+     *     "errors": {
+     *         "error": ["Error interno del servidor"]
      *     }
      * }
      */

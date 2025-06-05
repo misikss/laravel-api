@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
 /**
+ * @covers \App\Http\Controllers\Timetables\StoreTimetableController
+ *
  * Pruebas de integración para la creación de horarios
  * Verifica la validación de datos y la seguridad
  */
